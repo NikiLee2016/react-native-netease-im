@@ -4,7 +4,7 @@ android {
     useLibrary 'org.apache.http.legacy'
 
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         minSdkVersion 16
@@ -33,6 +33,15 @@ repositories {
 
 dependencies {
     compile fileTree(include: '*.jar', dir: 'libs')
-    compile 'com.facebook.react:react-native:+'
+    implementation 'com.facebook.react:react-native:+'
+    // 添加依赖。注意，版本号必须一致。
+    // 基础功能 (必需)
+    implementation 'com.netease.nimlib:basesdk:5.7.0'
+    // 音视频和互动白板服务需要
+    implementation 'com.netease.nimlib:nrtc:5.7.0'
+    // 音视频需要
+    implementation 'com.netease.nimlib:avchat:5.7.0'
+    // 小米、华为、魅族、fcm 推送
+    implementation 'com.netease.nimlib:push:5.7.0'
 }
   

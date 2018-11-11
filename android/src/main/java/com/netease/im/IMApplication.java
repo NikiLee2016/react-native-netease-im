@@ -32,6 +32,7 @@ import com.netease.nimlib.sdk.Observer;
 import com.netease.nimlib.sdk.SDKOptions;
 import com.netease.nimlib.sdk.StatusBarNotificationConfig;
 import com.netease.nimlib.sdk.auth.LoginInfo;
+import com.netease.nimlib.sdk.mixpush.MixPushConfig;
 import com.netease.nimlib.sdk.mixpush.MixPushService;
 import com.netease.nimlib.sdk.mixpush.NIMPushClient;
 import com.netease.nimlib.sdk.msg.MessageNotifierCustomization;
@@ -91,12 +92,17 @@ public class IMApplication {
         IMApplication.mainActivityClass = mainActivityClass;
         IMApplication.notify_msg_drawable_id = notify_msg_drawable_id;
 
+        MixPushConfig config = new MixPushConfig();
         // 注册小米推送appID 、appKey 以及在云信管理后台添加的小米推送证书名称，该逻辑放在 NIMClient init 之前
         if (miPushConfig != null) {
-            NIMPushClient.registerMiPush(context, miPushConfig.certificate, miPushConfig.appID, miPushConfig.appKey);
+           // NIMPushClient.registerMiPush(context, miPushConfig.certificate, miPushConfig.appID, miPushConfig.appKey);
+            //NIMPushClient.registerMixPushMessageHandler();
+            config.xmAppId = miPushConfig.appID;
+            config.xmAppKey = miPushConfig.appKey;
+            config.xmCertificateName = miPushConfig.certificate;
         }
 
-        NIMClient.init(context, getLoginInfo(), getOptions(context));
+        NIMClient.init(context, getLoginInfo(), getOptions(context, config));
         // crash handler
 //        AppCrashHandler.getInstance(context);
         if (NIMUtil.isMainProcess(IMApplication.context)) {
@@ -156,7 +162,7 @@ public class IMApplication {
         return Environment.getExternalStorageDirectory() + "/" + context.getPackageName() + "/nim";
     }
 
-    private static SDKOptions getOptions(Context context) {
+    private static SDKOptions getOptions(Context context, MixPushConfig config) {
         SDKOptions options = new SDKOptions();
 
         // 如果将新消息通知提醒托管给SDK完成，需要添加以下配置。
@@ -185,6 +191,7 @@ public class IMApplication {
         options.sessionReadAck = true;
         //自动检查 SDK 配置是否完全
         options.checkManifestConfig = DEBUG;
+        options.mixPushConfig = config;
         //reducedIM 支持弱 IM 场景
         //asyncInitSDK 支持异步 SDK 初始化
         //teamNotificationMessageMarkUnread 登录选项添加群通知消息是否计入未读数开关

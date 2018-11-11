@@ -625,13 +625,13 @@ public class SessionService {
         sendMessageSelf(item, null, true);
     }
 
-    /**
+    /**.
      * @param content
      */
     public void sendTextMessage(String content, List<String> selectedMembers, OnSendMessageListener onSendMessageListener) {
 
         IMMessage message = MessageBuilder.createTextMessage(sessionId, sessionTypeEnum, content);
-
+        //message.setPushContent("test content");
         if (selectedMembers != null && !selectedMembers.isEmpty()) {
             MemberPushOption option = createMemPushOption(selectedMembers, message);
 //            message.setPushContent("有人@了你");
