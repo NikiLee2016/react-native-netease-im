@@ -1,5 +1,7 @@
 
 android/*.iml
+android/.gradle/
+*.iml
 android/build
 android/.idea/
 .DS_Store

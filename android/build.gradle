@@ -43,5 +43,9 @@ dependencies {
     implementation 'com.netease.nimlib:avchat:5.7.0'
     // 小米、华为、魅族、fcm 推送
     implementation 'com.netease.nimlib:push:5.7.0'
+    //compile project(':react-native-netease-im:avchatkit')
+    api project(path: ':avchatkit')
+
+
 }
   

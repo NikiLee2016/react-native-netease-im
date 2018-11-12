@@ -3,6 +3,7 @@ import NimFriend from './im/Friend'
 import NimSession from './im/Session'
 import NimSystemMsg from './im/SystemMsg'
 import NimTeam from './im/Team'
+import AvChatSession from './im/AvChat'
 /**
  *监听列表
  *observeRecentContact 最近会话
@@ -25,4 +26,5 @@ export {
     NimSession,
     NimSystemMsg,
     NimTeam,
+    AvChatSession,
 }

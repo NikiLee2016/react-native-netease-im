@@ -49,6 +49,7 @@ import com.netease.im.uikit.permission.annotation.OnMPermissionDenied;
 import com.netease.im.uikit.permission.annotation.OnMPermissionGranted;
 import com.netease.im.uikit.permission.annotation.OnMPermissionNeverAskAgain;
 import com.netease.im.uikit.session.helper.MessageHelper;
+import com.netease.nim.avchatkit.AVChatKit;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.RequestCallback;
 import com.netease.nimlib.sdk.RequestCallbackWrapper;
@@ -157,7 +158,9 @@ public class RNNeteaseImModule extends ReactContextBaseJavaModule implements Lif
         LoginService.getInstance().login(new LoginInfo(contactId, token), new RequestCallback<LoginInfo>() {
             @Override
             public void onSuccess(LoginInfo loginInfo) {
-
+                if (loginInfo != null){
+                    AVChatKit.setAccount(loginInfo.getAccount());
+                }
                 promise.resolve(loginInfo == null ? "" : loginInfo.getAccount());
             }
 
@@ -2055,4 +2058,6 @@ public class RNNeteaseImModule extends ReactContextBaseJavaModule implements Lif
     public void onHostDestroy() {
         LogUtil.w(TAG, "onHostDestroy");
     }
+
+
 }

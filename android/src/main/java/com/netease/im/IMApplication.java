@@ -27,6 +27,9 @@ import com.netease.im.uikit.common.util.sys.ScreenUtil;
 import com.netease.im.uikit.contact.core.ContactProvider;
 import com.netease.im.uikit.contact.core.query.PinYin;
 import com.netease.im.uikit.session.helper.MessageHelper;
+import com.netease.nim.avchatkit.AVChatKit;
+import com.netease.nim.avchatkit.config.AVChatOptions;
+import com.netease.nim.avchatkit.model.IUserInfoProvider;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.Observer;
 import com.netease.nimlib.sdk.SDKOptions;
@@ -42,6 +45,7 @@ import com.netease.nimlib.sdk.msg.model.CustomNotification;
 import com.netease.nimlib.sdk.msg.model.IMMessage;
 import com.netease.nimlib.sdk.msg.model.RevokeMsgNotification;
 import com.netease.nimlib.sdk.uinfo.UserInfoProvider;
+import com.netease.nimlib.sdk.uinfo.model.UserInfo;
 import com.netease.nimlib.sdk.util.NIMUtil;
 
 /**
@@ -107,6 +111,7 @@ public class IMApplication {
 //        AppCrashHandler.getInstance(context);
         if (NIMUtil.isMainProcess(IMApplication.context)) {
 
+            initAvChatKit(context, mainActivityClass);
 
             // init pinyin
             PinYin.init(context);
@@ -120,6 +125,28 @@ public class IMApplication {
 
         }
 
+    }
+
+    private static void initAvChatKit(Context context, Class mainActivityClass) {
+        AVChatOptions avChatOptions = new AVChatOptions();
+        avChatOptions.entranceActivity = mainActivityClass;
+        avChatOptions.notificationIconRes = R.drawable.ic_stat_notify_msg;
+        AVChatKit.init(avChatOptions);
+        AVChatKit.setContext(context);
+
+        LoginInfo loginInfo = getLoginInfo();
+        AVChatKit.setAccount(loginInfo.getAccount());
+        AVChatKit.setUserInfoProvider(new IUserInfoProvider() {
+            @Override
+            public UserInfo getUserInfo(String account) {
+                return null;
+            }
+
+            @Override
+            public String getUserDisplayName(String account) {
+                return "someone";
+            }
+        });
     }
 
     public static void setDebugAble(boolean debugAble) {

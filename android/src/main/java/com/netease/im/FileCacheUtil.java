@@ -15,6 +15,7 @@ import com.netease.im.uikit.common.util.file.FileUtil;
 import com.netease.im.uikit.common.util.log.LogUtil;
 import com.netease.im.uikit.common.util.storage.StorageType;
 import com.netease.im.uikit.common.util.storage.StorageUtil;
+import com.netease.nim.avchatkit.AVChatKit;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.msg.MsgService;
 
