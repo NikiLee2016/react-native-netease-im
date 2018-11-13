@@ -1697,8 +1697,16 @@ public class RNNeteaseImModule extends ReactContextBaseJavaModule implements Lif
      * @param promise
      */
     @ReactMethod
-    public void play(String audioFile, Promise promise) {
-        audioPlayService.play(handler, reactContext, audioFile);
+    public void play(String audioFile, String playMode, Promise promise) {
+        //0: 听筒, 3: 扬声器
+        int mode = Integer.parseInt(playMode);
+        //对mode的值进行检查, 不合格就抛错
+        if (mode == AudioManager.STREAM_MUSIC
+                || mode == AudioManager.STREAM_VOICE_CALL){
+            audioPlayService.playAudio(handler, reactContext, mode, AudioPlayService.SCHEME_FILE, audioFile);
+        }else {
+            throw new IllegalArgumentException("playMode参数非法, 请按照文档说明调用方法!");
+        }
     }
 
     @ReactMethod

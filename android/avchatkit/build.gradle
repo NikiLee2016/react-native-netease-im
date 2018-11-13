@@ -36,8 +36,8 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
     compileOnly 'jp.wasabeef:glide-transformations:3.0.1'
 
-    api project(path: ':faceunity')
-//    compile project(':react-native-netease-im:faceunity')
+    //api project(path: ':faceunity')
+    compile project(':react-native-netease-im-pro:faceunity')
 
 //    compile project(':avchatkit:faceunity')
 

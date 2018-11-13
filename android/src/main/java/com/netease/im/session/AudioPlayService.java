@@ -21,7 +21,7 @@ import static android.content.Context.SENSOR_SERVICE;
 
 public class AudioPlayService implements SensorEventListener {
 
-    final static String SCHEME_FILE = "file";
+    public final static String SCHEME_FILE = "file";
     final static String SCHEME_RAW = "raw";
     final static String SCHEME_ASSETS = "assets";
     AudioPlayerM currentAudioPlayer;
@@ -55,7 +55,7 @@ public class AudioPlayService implements SensorEventListener {
         }
         LogUtil.w(type, "path:" + filePath);
         if (audioStreamType == -1) {
-            register(context, true);
+            //register(context, true);
         } else {
             currentAudioStreamType = audioStreamType;
         }
@@ -96,7 +96,7 @@ public class AudioPlayService implements SensorEventListener {
 
     public void stopPlay(Handler handler, ReactContext context) {
         stopAudio(handler);
-        register(context, true);
+        //register(context, true);
     }
 
     private SensorManager sensorManager;

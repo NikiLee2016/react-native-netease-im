@@ -32,10 +32,11 @@ class Utils {
     }
     /**
      * 播放录音
+     * playMode: 播放模式: 0: 听筒播放, 3: 扬声器播放
      * @returns {*}
      */
-    play(filepath) {
-        return RNNeteaseIm.play(filepath)
+    play(filepath, playMode) {
+        return RNNeteaseIm.play(filepath, playMode)
     }
 
     /**
