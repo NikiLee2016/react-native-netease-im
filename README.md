@@ -1,8 +1,4 @@
 
-React Native的网易云信插件
-欢迎加入QQ群交流`153174456`
-## Demo
-[react-native-chat-demo](https://github.com/reactnativecomponent/react-native-chat-demo)
 
 #### 注意事项: 
 ##### 2.普通帐号不要使用5位数，因为5位数设定是系统帐号，尽量使用6位或者6位以上
@@ -12,19 +8,19 @@ React Native的网易云信插件
 ### 1.首先安装npm包
 
 ```bash
-npm install react-native-netease-im --save
+yarn add react-native-netease-im-pro
 ```
 
 ### 2.link
 ```bash
-react-native link react-native-netease-im
+react-native link react-native-netease-im-pro
 ```
 
 #### 手动link~（如果不能够自动link）
 ##### ios
 ```
 a.打开XCode's工程中, 右键点击Libraries文件夹 ➜ Add Files to <...>
-b.去node_modules ➜ react-native-netease-im ➜ ios ➜ 选择 RNNeteaseIm.xcodeproj
+b.去node_modules ➜ react-native-netease-im-pro ➜ ios ➜ 选择 RNNeteaseIm.xcodeproj
 c.在工程Build Phases ➜ Link Binary With Libraries中添加libRNNeteaseIm.a
 ```
 ##### Android
@@ -32,8 +28,8 @@ c.在工程Build Phases ➜ Link Binary With Libraries中添加libRNNeteaseIm.a
 // file: android/settings.gradle
 ...
 
-include ':react-native-netease-im'
-project(':react-native-netease-im').projectDir = new File(settingsDir, '../node_modules/react-native-netease-im/android')
+include ':react-native-netease-im-pro'
+project(':react-native-netease-im-pro').projectDir = new File(settingsDir, '../node_modules/react-native-netease-im-pro/android')
 ```
 
 ```
@@ -42,7 +38,7 @@ project(':react-native-netease-im').projectDir = new File(settingsDir, '../node_
 
 dependencies {
     ...
-    compile project(':react-native-netease-im')
+    compile project(':react-native-netease-im-pro')
 }
 ```
 
@@ -238,7 +234,7 @@ manifestPlaceholders = [
 ### 引入包
 
 ```
-import {NimSession} from 'react-native-netease-im';
+import {NimSession} from 'react-native-netease-im-pro';
 ```
 
 ### API

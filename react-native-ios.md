@@ -1,13 +1,15 @@
 
 
 ###自动链接
-react-native link react-native-netease-im
+react-native link react-native-netease-im-pro
 
 ### 添加NIM SDK
+```
 NIMSDK.framework
 NIMAVChat.framework
 NMC.framework
 NMCVideoFilter.bundle
+```
 
 ### 添加其他 NIM SDK 依赖库
 

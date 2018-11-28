@@ -1,7 +1,7 @@
 
 
 ###自动链接
-react-native link react-native-netease-im
+react-native link react-native-netease-im-pro
 
 ###`MainActivity.java` 
 
