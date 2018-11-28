@@ -7,6 +7,8 @@
 //
 #ifndef PrefixHeader_pch
 #define PrefixHeader_pch
+
+#ifdef __OBJC__
 #import <NIMSDK/NIMSDK.h>
 #import <NIMAVChat/NIMAVChat.h>
 #import "NTESGlobalMacro.h"
@@ -42,4 +44,5 @@ static DDLogLevel ddLogLevel = DDLogLevelInfo;
 #define CustomMessgeTypeBusinessCard  10     //名片
 #define CustomMessgeTypeCustom  102     //名片
 
+#endif
 #endif /* PrefixHeader_pch */

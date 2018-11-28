@@ -14,7 +14,7 @@
 #import "NTESNetCallChatInfo.h"
 #import "NTESSessionUtil.h"
 #import "NTESVideoChatNetStatusView.h"
-//#import "NTESGLView.h"
+#import "NTESGLView.h"
 #import "NTESBundleSetting.h"
 #import "NTESRecordSelectView.h"
 #import "UIView+NTES.h"
@@ -28,9 +28,9 @@
 
 @property (nonatomic,assign) BOOL oppositeCloseVideo;
 
-//#if defined (NTESUseGLView)
-//@property (nonatomic, strong) NTESGLView *remoteGLView;
-//#endif
+#if defined (NTESUseGLView)
+@property (nonatomic, strong) NTESGLView *remoteGLView;
+#endif
 
 @property (nonatomic,weak) UIView   *localView;
 
@@ -73,12 +73,12 @@
 - (void)viewDidLoad {
     self.localView = self.smallVideoView;
     [super viewDidLoad];
-    
+
     if (self.localPreView) {
         self.localPreView.frame = self.localView.bounds;
         [self.localView addSubview:self.localPreView];
     }
-    
+
     [self initUI];
 }
 
@@ -96,13 +96,13 @@
 }
 
 - (void)initRemoteGLView {
-//#if defined (NTESUseGLView)
-//    _remoteGLView = [[NTESGLView alloc] initWithFrame:_bigVideoView.bounds];
-//    [_remoteGLView setContentMode:[[NTESBundleSetting sharedConfig] videochatRemoteVideoContentMode]];
-//    [_remoteGLView setBackgroundColor:[UIColor clearColor]];
-//    _remoteGLView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-//    [_bigVideoView addSubview:_remoteGLView];
-//#endif
+#if defined (NTESUseGLView)
+    _remoteGLView = [[NTESGLView alloc] initWithFrame:_bigVideoView.bounds];
+    [_remoteGLView setContentMode:[[NTESBundleSetting sharedConfig] videochatRemoteVideoContentMode]];
+    [_remoteGLView setBackgroundColor:[UIColor clearColor]];
+    _remoteGLView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [_bigVideoView addSubview:_remoteGLView];
+#endif
 }
 
 
@@ -151,7 +151,7 @@
     self.muteBtn.enabled = NO;
     self.disableCameraBtn.enabled = NO;
     self.localRecordBtn.enabled = NO;
-    
+
     self.localRecordingView.hidden = YES;
     self.lowMemoryView.hidden = YES;
     [self.hungUpBtn removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
@@ -195,7 +195,7 @@
 
 //接听中界面(视频)
 - (void)videoCallingInterface{
-    
+
     NIMNetCallNetStatus status = [[NIMAVChatSDK sharedSDK].netCallManager netStatus:self.peerUid];
     [self.netStatusView refreshWithNetState:status];
     self.acceptBtn.hidden = YES;
@@ -207,11 +207,11 @@
     self.disableCameraBtn.hidden = NO;
     self.localRecordBtn.hidden = NO;
     self.switchModelBtn.hidden = NO;
-    
+
     self.muteBtn.enabled = YES;
     self.disableCameraBtn.enabled = YES;
     self.localRecordBtn.enabled = YES;
-    
+
     self.muteBtn.selected = self.callInfo.isMute;
     self.disableCameraBtn.selected = self.callInfo.disableCammera;
     self.localRecordBtn.selected = ![self allRecordsStopped];
@@ -228,7 +228,7 @@
 
 //切换接听中界面(语音)
 - (void)audioCallingInterface{
-    
+
     NTESAudioChatViewController *vc = [[NTESAudioChatViewController alloc] initWithCallInfo:self.callInfo];
     [UIView  beginAnimations:nil context:NULL];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
@@ -340,11 +340,11 @@
     if (_calleeBasy) {
         return;
     }
-    
+
     if (self.localPreView) {
         [self.localPreView removeFromSuperview];
     }
-    
+
     self.localPreView = displayView;
     displayView.frame = self.localView.bounds;
 
@@ -358,11 +358,11 @@
                     from:(NSString *)user
 {
     if (([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) && !self.oppositeCloseVideo) {
-        
-//        if (!_remoteGLView) {
-//            [self initRemoteGLView];
-//        }
-//        [_remoteGLView render:yuvData width:width height:height];
+
+        if (!_remoteGLView) {
+            [self initRemoteGLView];
+        }
+        [_remoteGLView render:yuvData width:width height:height];
     }
 }
 #else
@@ -406,13 +406,13 @@
 {
     if (self.callInfo.callID == callID) {
         [super onCallEstablished:callID];
-        
+
         self.durationLabel.hidden = NO;
         self.durationLabel.text = self.durationDesc;
-        
+
         if (self.localView == self.bigVideoView) {
             self.localView = self.smallVideoView;
-            
+
             if (self.localPreView) {
                 [self onLocalDisplayviewReady:self.localPreView];
             }
@@ -494,9 +494,9 @@
 }
 
 - (void)resetRemoteImage{
-//#if defined (NTESUseGLView)
-//    [self.remoteGLView render:nil width:0 height:0];
-//#endif
+#if defined (NTESUseGLView)
+    [self.remoteGLView render:nil width:0 height:0];
+#endif
 
     self.bigVideoView.image = [UIImage imageNamed:@"netcall_bkg.png"];
 }
