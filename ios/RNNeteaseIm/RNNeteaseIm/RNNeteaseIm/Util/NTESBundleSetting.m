@@ -35,11 +35,11 @@
     NSDictionary *plistDict = [[NSDictionary alloc] initWithContentsOfFile:plistPath];
     NSArray *preferences = [plistDict valueForKey:@"PreferenceSpecifiers"];
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-
+    
     for(NSDictionary *setting in preferences) {
         // 如果NSUserDefaults里有，则优先使用UserDefaults里的
         NSString *key = [setting valueForKey:@"Key"];
-
+        
         if (key && key.length>0 && [key containsString:@"socks5"]) {
             // 从Plist中获取值填充
             id value = [setting valueForKey:@"DefaultValue"];
@@ -58,7 +58,7 @@
 - (BOOL)dropTableWhenDeleteMessages
 {
     return [[[NSUserDefaults standardUserDefaults] objectForKey:@"enabled_drop_msg_table"] boolValue];
-
+    
 }
 
 - (BOOL)localSearchOrderByTimeDesc{
@@ -258,7 +258,7 @@
 - (NIMNetCallVideoCodec)perferredVideoEncoder
 {
     NSInteger videoEncoderSetting = [[[NSUserDefaults standardUserDefaults] objectForKey:@"videochat_preferred_video_encoder"] integerValue];
-
+    
     if ((videoEncoderSetting >= NIMNetCallVideoCodecDefault) &&
         (videoEncoderSetting <= NIMNetCallVideoCodecHardware)) {
         return (NIMNetCallVideoCodec)videoEncoderSetting;
@@ -269,13 +269,13 @@
 - (NIMNetCallVideoCodec)perferredVideoDecoder
 {
     NSInteger videoDecoderSetting = [[[NSUserDefaults standardUserDefaults] objectForKey:@"videochat_preferred_video_decoder"] integerValue];
-
+    
     if ((videoDecoderSetting >= NIMNetCallVideoCodecDefault) &&
         (videoDecoderSetting <= NIMNetCallVideoCodecHardware)) {
         return (NIMNetCallVideoCodec)videoDecoderSetting;
     }
     return NIMNetCallVideoCodecDefault;
-
+    
 }
 - (NSUInteger)videoMaxEncodeKbps
 {
@@ -290,7 +290,7 @@
 - (BOOL)autoDeactivateAudioSession
 {
     id setting = [[NSUserDefaults standardUserDefaults] objectForKey:@"videochat_auto_disable_audiosession"];
-
+    
     if (setting) {
         return [setting boolValue];
     }
@@ -302,33 +302,33 @@
 - (BOOL)audioDenoise
 {
     id setting = [[NSUserDefaults standardUserDefaults] objectForKey:@"videochat_audio_denoise"];
-
+    
     if (setting) {
         return [setting boolValue];
     }
     else {
         return YES;
     }
-
+    
 }
 
 - (BOOL)voiceDetect
 {
     id setting = [[NSUserDefaults standardUserDefaults] objectForKey:@"videochat_voice_detect"];
-
+    
     if (setting) {
         return [setting boolValue];
     }
     else {
         return YES;
     }
-
+    
 }
 
 - (BOOL)preferHDAudio
 {
     id setting = [[NSUserDefaults standardUserDefaults] objectForKey:@"videochat_prefer_hd_audio"];
-
+    
     if (setting) {
         return [setting boolValue];
     }
@@ -340,7 +340,7 @@
 - (NIMAVChatScene)scene
 {
     id setting = [[NSUserDefaults standardUserDefaults] objectForKey:@"avchat_scene"];
-
+    
     if (setting) {
         return [setting unsignedIntegerValue];
     }
@@ -368,62 +368,62 @@
 - (NSString *)description
 {
     return [NSString stringWithFormat:
-                @"\n\n\n" \
-                "enabled_remove_recent_session %d\n" \
-                "local_search_time_order_desc %d\n" \
-                "auto_remove_remote_session %d\n" \
-                "auto_remove_snap_message %d\n" \
-                "add_friend_need_verify %d\n" \
-                "show app %d\n" \
-                "maximum log days %zd\n" \
-                "using amr %d\n" \
-                "ignore_team_types %@ \n" \
-                "server_record_audio %d\n" \
-                "server_record_video %d\n" \
-                "server_record_whiteboard_data %d\n" \
-                "videochat_video_crop %zd\n" \
-                "videochat_auto_rotate_remote_video %d \n" \
-                "videochat_preferred_video_quality %zd\n" \
-                "videochat_start_with_back_camera %zd\n" \
-                "videochat_preferred_video_encoder %zd\n" \
-                "videochat_preferred_video_decoder %zd\n" \
-                "videochat_video_encode_max_kbps %zd\n" \
-                "videochat_local_record_video_kbps %zd\n" \
-                "videochat_auto_disable_audiosession %zd\n" \
-                "videochat_audio_denoise %zd\n" \
-                "videochat_voice_detect %zd\n" \
-                "videochat_prefer_hd_audio %zd\n"\
-                "avchat_scene %zd\n"\
-                "chatroom_retry_count %zd\n"\
-                "sync_when_remote_fetch_messages %zd\n"\
-                "\n\n\n",
-                [self removeSessionWhenDeleteMessages],
-                [self localSearchOrderByTimeDesc],
-                [self autoRemoveRemoteSession],
-                [self autoRemoveSnapMessage],
-                [self needVerifyForFriend],
-                [self showFps],
-                [self maximumLogDays],
-                [self usingAmr],
-                [self ignoreTeamNotificationTypes],
-                [self serverRecordAudio],
-                [self serverRecordVideo],
-                [self serverRecordWhiteboardData],
-                [self videochatVideoCrop],
-                [self videochatAutoRotateRemoteVideo],
-                [self preferredVideoQuality],
-                [self startWithBackCamera],
-                [self perferredVideoEncoder],
-                [self perferredVideoDecoder],
-                [self videoMaxEncodeKbps],
-                [self localRecordVideoKbps],
-                [self autoDeactivateAudioSession],
-                [self audioDenoise],
-                [self voiceDetect],
-                [self preferHDAudio],
-                [self scene],
-                [self chatroomRetryCount],
-                [self enableSyncWhenFetchRemoteMessages]
+            @"\n\n\n" \
+            "enabled_remove_recent_session %d\n" \
+            "local_search_time_order_desc %d\n" \
+            "auto_remove_remote_session %d\n" \
+            "auto_remove_snap_message %d\n" \
+            "add_friend_need_verify %d\n" \
+            "show app %d\n" \
+            "maximum log days %zd\n" \
+            "using amr %d\n" \
+            "ignore_team_types %@ \n" \
+            "server_record_audio %d\n" \
+            "server_record_video %d\n" \
+            "server_record_whiteboard_data %d\n" \
+            "videochat_video_crop %zd\n" \
+            "videochat_auto_rotate_remote_video %d \n" \
+            "videochat_preferred_video_quality %zd\n" \
+            "videochat_start_with_back_camera %zd\n" \
+            "videochat_preferred_video_encoder %zd\n" \
+            "videochat_preferred_video_decoder %zd\n" \
+            "videochat_video_encode_max_kbps %zd\n" \
+            "videochat_local_record_video_kbps %zd\n" \
+            "videochat_auto_disable_audiosession %zd\n" \
+            "videochat_audio_denoise %zd\n" \
+            "videochat_voice_detect %zd\n" \
+            "videochat_prefer_hd_audio %zd\n"\
+            "avchat_scene %zd\n"\
+            "chatroom_retry_count %zd\n"\
+            "sync_when_remote_fetch_messages %zd\n"\
+            "\n\n\n",
+            [self removeSessionWhenDeleteMessages],
+            [self localSearchOrderByTimeDesc],
+            [self autoRemoveRemoteSession],
+            [self autoRemoveSnapMessage],
+            [self needVerifyForFriend],
+            [self showFps],
+            [self maximumLogDays],
+            [self usingAmr],
+            [self ignoreTeamNotificationTypes],
+            [self serverRecordAudio],
+            [self serverRecordVideo],
+            [self serverRecordWhiteboardData],
+            [self videochatVideoCrop],
+            [self videochatAutoRotateRemoteVideo],
+            [self preferredVideoQuality],
+            [self startWithBackCamera],
+            [self perferredVideoEncoder],
+            [self perferredVideoDecoder],
+            [self videoMaxEncodeKbps],
+            [self localRecordVideoKbps],
+            [self autoDeactivateAudioSession],
+            [self audioDenoise],
+            [self voiceDetect],
+            [self preferHDAudio],
+            [self scene],
+            [self chatroomRetryCount],
+            [self enableSyncWhenFetchRemoteMessages]
             ];
 }
 @end

@@ -9,7 +9,6 @@
 #import "RNNeteaseIm.h"
 #import "RCTUtils.h"
 #import "RNNotificationCenter.h"
-#import "NTESAudioChatViewController.h"
 #import "YNAudioChatViewController.h"
 #import "YNVideoChatViewController.h"
 
@@ -17,7 +16,6 @@
 
 @interface RNNeteaseIm(){
     NSString *strUserAgent;
-    NTESAudioChatViewController *audoiVC;
 }
 
 @end

@@ -7,7 +7,6 @@
 //
 
 #import "YNAudioChatViewController.h"
-#import "NTESVideoChatViewController.h"
 #import "NTESTimerHolder.h"
 #import "NTESNetCallChatInfo.h"
 #import "NTESSessionUtil.h"
