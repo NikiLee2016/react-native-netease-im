@@ -140,7 +140,7 @@ NTES_FORBID_INTERACTIVE_POP
     else {
         [self startByCaller];
     }
-    
+
     [self checkFreeDiskSpace];
     [self.diskCheckTimer startTimer:DiskCheckTimeInterval
                            delegate:self
@@ -149,7 +149,7 @@ NTES_FORBID_INTERACTIVE_POP
 
 #pragma mark - Subclass Impl
 - (void)startByCaller{
-    
+
     if (self.callInfo.callType == NIMNetCallTypeVideo) {
         //视频呼叫马上发起
         [self doStartByCaller];
@@ -166,7 +166,7 @@ NTES_FORBID_INTERACTIVE_POP
                 DDLogError(@"Netcall request was cancelled before, ignore it.");
                 return;
             }
-            
+
             [wself doStartByCaller];
         });
     }
@@ -176,13 +176,13 @@ NTES_FORBID_INTERACTIVE_POP
 {
     self.callInfo.isStart = YES;
     NSArray *callees = [NSArray arrayWithObjects:self.callInfo.callee, nil];
-    
+
     NIMNetCallOption *option = [[NIMNetCallOption alloc] init];
     option.extendMessage = @"音视频请求扩展信息";
     option.apnsContent = [NSString stringWithFormat:@"%@请求", self.callInfo.callType == NIMNetCallTypeAudio ? @"网络通话" : @"视频聊天"];
     option.apnsSound = @"video_chat_tip_receiver.aac";
-//    [self fillUserSetting:option];
-    
+    [self fillUserSetting:option];
+
     option.videoCaptureParam.startWithCameraOn = (self.callInfo.callType == NIMNetCallTypeVideo);
 
     __weak typeof(self) wself = self;
@@ -226,7 +226,7 @@ NTES_FORBID_INTERACTIVE_POP
 - (void)hangup{
     _userHangup = YES;
     [[NIMAVChatSDK sharedSDK].netCallManager hangup:self.callInfo.callID];
-    
+
     if (self.callInfo.localRecording) {
         __weak typeof(self) wself = self;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -241,12 +241,12 @@ NTES_FORBID_INTERACTIVE_POP
 }
 
 - (void)response:(BOOL)accept{
-    
+
     _calleeResponsed = YES;
-    
+
     NIMNetCallOption *option = [[NIMNetCallOption alloc] init];
-//    [self fillUserSetting:option];
-    
+    [self fillUserSetting:option];
+
     __weak typeof(self) wself = self;
 
     [[NIMAVChatSDK sharedSDK].netCallManager response:self.callInfo.callID accept:accept option:option completion:^(NSError *error, UInt64 callID) {
@@ -296,8 +296,8 @@ NTES_FORBID_INTERACTIVE_POP
         controller = controller.presentingViewController;
     }
     [controller dismissViewControllerAnimated:NO completion:nil];
-    
-    
+
+
     [self setUpStatusBar:UIStatusBarStyleDefault];
     if (completion) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(transition.duration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -332,7 +332,7 @@ NTES_FORBID_INTERACTIVE_POP
     UInt64 timestamp =[[NSDate date]timeIntervalSince1970]*1000;
     NSString * pathComponent = [NSString stringWithFormat:@"record_%@_%llu.mp4",[[NIMSDK sharedSDK].loginManager currentAccount],timestamp];
     NSURL *filePath = [[[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject] URLByAppendingPathComponent:pathComponent];
-    
+
     BOOL startAccepted;
     startAccepted = [[NIMAVChatSDK sharedSDK].netCallManager startRecording:filePath
                                                                videoBitrate:(UInt32)[[NTESBundleSetting sharedConfig] localRecordVideoKbps] * 1000
@@ -347,7 +347,7 @@ NTES_FORBID_INTERACTIVE_POP
     NSString * pathComponent = [NSString stringWithFormat:@"record_%@_%llu.mp4",self.peerUid,timestamp];
     NSURL *filePath = [[[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject] URLByAppendingPathComponent:pathComponent];
 
-    
+
     BOOL startAccepted;
     startAccepted = [[NIMAVChatSDK sharedSDK].netCallManager startRecording:filePath
                                                                videoBitrate:(UInt32)[[NTESBundleSetting sharedConfig] localRecordVideoKbps] * 1000
@@ -401,7 +401,7 @@ NTES_FORBID_INTERACTIVE_POP
             {
                 toastText = [toastText stringByAppendingString: [toastText isEqualToString:@""] ?@"自己音频开始失败":@",自己音频开始失败"];
             }
-            
+
         }
         else
         _successRecords++;
@@ -424,7 +424,7 @@ NTES_FORBID_INTERACTIVE_POP
             _successRecords++;
 
     }
-    
+
     //判断是否需要提示
     if (![toastText isEqualToString:@""]) {
         if ([toastText componentsSeparatedByString:@","].count == records) {
@@ -551,16 +551,16 @@ NTES_FORBID_INTERACTIVE_POP
 - (void)onControl:(UInt64)callID
              from:(NSString *)user
              type:(NIMNetCallControlType)control{
-    
+
     if (user == [[NIMSDK sharedSDK].loginManager currentAccount]) {
         //多端登录时，自己会收到自己发出的控制指令，这里忽略他
         return;
     }
-    
+
     if (callID != self.callInfo.callID) {
         return;
     }
-    
+
     switch (control) {
         case NIMNetCallControlTypeFeedabck:{
             NSMutableArray *room = self.chatRoom;
@@ -693,9 +693,9 @@ NTES_FORBID_INTERACTIVE_POP
                        uid:(NSString *)userId
 {
     DDLogError(@"Local record error %@ (%zd)", error.localizedDescription, error.code);
-    
+
     if (self.callInfo.callID == callID) {
-        
+
         [self.view makeToast:[NSString stringWithFormat:@"录制发生错误: %zd", error.code]
                     duration:2
                     position:CSToastPositionCenter];
@@ -708,7 +708,7 @@ NTES_FORBID_INTERACTIVE_POP
         }
 
     }
-    
+
     if (error.code == NIMAVLocalErrorCodeRecordWillStopForLackSpace) {
         _recordWillStopForLackSpace = YES;
     }
@@ -757,7 +757,7 @@ NTES_FORBID_INTERACTIVE_POP
 - (void)checkServiceEnable:(void(^)(BOOL))result{
     AVAuthorizationStatus audioStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
     AVAuthorizationStatus videoStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-    
+
     if (videoStatus == AVAuthorizationStatusRestricted
         || videoStatus == AVAuthorizationStatusDenied) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
@@ -772,7 +772,7 @@ NTES_FORBID_INTERACTIVE_POP
         }];
         return;
     }
-    
+
     if (audioStatus == AVAuthorizationStatusRestricted
         || audioStatus == AVAuthorizationStatusDenied ) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
@@ -787,7 +787,7 @@ NTES_FORBID_INTERACTIVE_POP
         }];
         return;
     }
-    
+
     if ([[AVAudioSession sharedInstance] respondsToSelector:@selector(requestRecordPermission:)]) {
         [[AVAudioSession sharedInstance] performSelector:@selector(requestRecordPermission:) withObject:^(BOOL granted) {
             dispatch_async_main_safe(^{
@@ -823,7 +823,7 @@ NTES_FORBID_INTERACTIVE_POP
                         }
                     }];
                 }
-                
+
             });
         }];
     } else {
@@ -865,7 +865,7 @@ NTES_FORBID_INTERACTIVE_POP
     {
         [self saveToPhotosAlbum:fileURL];
     }
-    
+
 }
 
 - (void)saveToPhotosAlbum:(NSURL *)fileURL
@@ -896,14 +896,14 @@ NTES_FORBID_INTERACTIVE_POP
 - (void)checkVideoSaveToAlbum:(NSError *)error
 {
     NSString *toast = _recordWillStopForLackSpace ? @"你的手机内存不足，录制已结束\n" : @"录制已结束\n";
-    
+
     if (error) {
         toast = [NSString stringWithFormat:@"%@保存至系统相册失败:%zd", toast, error.code];
     }
     else {
         toast = [toast stringByAppendingString:@"录制文件已保存至系统相册"];
     }
-    
+
     if (!self.callInfo.localRecording&&!self.callInfo.otherSideRecording&&_successRecords==1) {
         [self.navigationController.view makeToast:toast
                                           duration:3
@@ -913,17 +913,17 @@ NTES_FORBID_INTERACTIVE_POP
 }
 
 - (void)checkFreeDiskSpace{
-    
+
     if (self.callInfo.localRecording) {
         uint64_t freeSpace = 1000 * MB;
         NSError *error;
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSDictionary *attrbites = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[paths lastObject] error: &error];
-        
+
         if (attrbites) {
             NSNumber *freeFileSystemSizeInBytes = [attrbites objectForKey:NSFileSystemFreeSize];
             freeSpace = [freeFileSystemSizeInBytes unsignedLongLongValue];
-        
+
             [self udpateLowSpaceWarning:(freeSpace < FreeDiskSpaceWarningThreshold)];
         }
     }
@@ -939,7 +939,7 @@ NTES_FORBID_INTERACTIVE_POP
     serverRecord.enableServerHostRecording      = [[NTESBundleSetting sharedConfig] serverRecordHost];
     serverRecord.serverRecordingMode            = [[NTESBundleSetting sharedConfig] serverRecordMode];
     option.serverRecord = serverRecord;
-    
+
     NIMNetCallSocksParam *socks5Info =  [[NIMNetCallSocksParam alloc] init];
     socks5Info.useSocks5Proxy    =  [[NTESBundleSetting sharedConfig] useSocks];
     socks5Info.socks5Addr        =  [[NTESBundleSetting sharedConfig] socks5Addr];
@@ -947,7 +947,7 @@ NTES_FORBID_INTERACTIVE_POP
     socks5Info.socks5Password    =  [[NTESBundleSetting sharedConfig] socksPassword];
     socks5Info.socks5Type        =  [[NTESBundleSetting sharedConfig] socks5Type];
     [[NIMAVChatSDK sharedSDK].netCallManager setUpNetCallSocksWithParam:socks5Info];
-    
+
     option.preferredVideoEncoder = [[NTESBundleSetting sharedConfig] perferredVideoEncoder];
     option.preferredVideoDecoder = [[NTESBundleSetting sharedConfig] perferredVideoDecoder];
     option.videoMaxEncodeBitrate = [[NTESBundleSetting sharedConfig] videoMaxEncodeKbps] * 1000;
@@ -956,7 +956,7 @@ NTES_FORBID_INTERACTIVE_POP
     option.voiceDetect = [[NTESBundleSetting sharedConfig] voiceDetect];
     option.preferHDAudio =  [[NTESBundleSetting sharedConfig] preferHDAudio];
     option.scene = [[NTESBundleSetting sharedConfig] scene];
-    
+
     NIMNetCallVideoCaptureParam *param = [[NIMNetCallVideoCaptureParam alloc] init];
     [self fillVideoCaptureSetting:param];
     option.videoCaptureParam = param;
