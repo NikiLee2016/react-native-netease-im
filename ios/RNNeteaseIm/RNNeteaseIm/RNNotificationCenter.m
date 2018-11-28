@@ -12,8 +12,13 @@
 #import "NIMMessageMaker.h"
 #import "NIMModel.h"
 #import "ConversationViewController.h"
-@interface RNNotificationCenter () <NIMSystemNotificationManagerDelegate,NIMChatManagerDelegate>
+#import "RCTViewManager.h"
+#import "YNAudioChatViewController.h"
+#import "YNVideoChatViewController.h"
+#import "NTESAVNotifier.h"
+@interface RNNotificationCenter () <NIMSystemNotificationManagerDelegate,NIMChatManagerDelegate, NIMNetCallManagerDelegate>
 @property (nonatomic,strong) AVAudioPlayer *player; //播放提示音
+@property (nonatomic,strong) NTESAVNotifier *notifier;
 @end
 
 @implementation RNNotificationCenter
@@ -37,16 +42,18 @@
       
         NSURL *url = [[NSBundle mainBundle] URLForResource:@"message" withExtension:@"wav"];
         _player = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
-        
+        _notifier = [[NTESAVNotifier alloc] init];
         [[NIMSDK sharedSDK].systemNotificationManager addDelegate:self];
       
         [[NIMSDK sharedSDK].chatManager addDelegate:self];
+        [[NIMAVChatSDK sharedSDK].netCallManager addDelegate:self];
     }
     return self;
 }
 - (void)dealloc{
     [[NIMSDK sharedSDK].systemNotificationManager removeDelegate:self];
     [[NIMSDK sharedSDK].chatManager removeDelegate:self];
+    [[NIMAVChatSDK sharedSDK].netCallManager removeDelegate:self];
 }
 #pragma mark - NIMChatManagerDelegate
 - (void)onRecvMessages:(NSArray *)messages//接收到新消息
@@ -168,6 +175,87 @@
         return jsonDict;
     }
     return nil;
+}
+
+# pragma - NIMNetCallManagerDelegate
+- (void)onHangup:(UInt64)callID by:(NSString *)user {
+    [_notifier stop];
+}
+
+- (void)onReceive:(UInt64)callID from:(NSString *)caller type:(NIMNetCallMediaType)type message:(NSString *)extendMessage {
+    
+    if ([self shouldFireNotification:caller]) {
+        NSString *text = [self textByCaller:caller
+                                       type:type];
+        [_notifier start:text];
+    }
+    
+    UIViewController *vc;
+    switch (type) {
+        case NIMNetCallTypeVideo:{
+            vc = [[YNVideoChatViewController alloc] initWithCaller:caller callId:callID];
+        }
+            break;
+        case NIMNetCallTypeAudio:{
+            vc = [[YNAudioChatViewController alloc] initWithCaller:caller callId:callID];
+        }
+            break;
+        default:
+            break;
+    }
+    UIViewController *rootViewController = RCTPresentedViewController();
+    [rootViewController presentViewController:vc animated:YES completion:nil];
+}
+
+- (BOOL)shouldFireNotification:(NSString *)callerId
+{
+    //退后台后 APP 存活，然后收到通知
+    BOOL should = YES;
+    
+    //消息不提醒
+    id<NIMUserManager> userManager = [[NIMSDK sharedSDK] userManager];
+    if (![userManager notifyForNewMsg:callerId])
+    {
+        should = NO;
+    }
+    
+    //当前在正处于免打扰
+    id<NIMApnsManager> apnsManager = [[NIMSDK sharedSDK] apnsManager];
+    NIMPushNotificationSetting *setting = [apnsManager currentSetting];
+    if (setting.noDisturbing)
+    {
+        NSDate *date = [NSDate date];
+        NSCalendar *calendar = [NSCalendar currentCalendar];
+        NSDateComponents *components = [calendar components:(NSCalendarUnitHour | NSCalendarUnitMinute) fromDate:date];
+        NSInteger now = components.hour * 60 + components.minute;
+        NSInteger start = setting.noDisturbingStartH * 60 + setting.noDisturbingStartM;
+        NSInteger end = setting.noDisturbingEndH * 60 + setting.noDisturbingEndM;
+        
+        //当天区间
+        if (end > start && end >= now && now >= start)
+        {
+            should = NO;
+        }
+        //隔天区间
+        else if(end < start && (now <= end || now >= start))
+        {
+            should = NO;
+        }
+    }
+    
+    return should;
+}
+
+- (NSString *)textByCaller:(NSString *)caller type:(NIMNetCallMediaType)type
+{
+    NSString *action = type == NIMNetCallMediaTypeAudio ? @"音频":@"视频";
+    NSString *text = [NSString stringWithFormat:@"你收到了一个%@聊天请求",action];
+    NIMKitInfo *info = [[NIMKit sharedKit] infoByUser:caller option:nil];
+    if ([info.showName length])
+    {
+        text = [NSString stringWithFormat:@"%@向你发起了一个%@聊天请求",info.showName,action];
+    }
+    return text;
 }
 
 @end

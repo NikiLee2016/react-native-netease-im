@@ -14,6 +14,9 @@ class Session {
     login(contactId, token) {
         return RNNeteaseIm.login(contactId, token)
     }
+    callAvChat = ({sessionId, sessionName, chatType}) => {
+        RNNeteaseIm.callAvChat({sessionId, sessionName, chatType})
+    }
     /**
      * 退出
      * @returns {*}

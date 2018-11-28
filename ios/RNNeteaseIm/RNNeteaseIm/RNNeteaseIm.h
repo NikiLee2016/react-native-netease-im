@@ -14,6 +14,7 @@
 #import "TeamViewController.h"
 #import "ConversationViewController.h"
 #import "BankListViewController.h"
-@interface RNNeteaseIm : RCTViewManager
+
+@interface RNNeteaseIm : RCTViewManager <NIMNetCallManagerDelegate>
 
 @end

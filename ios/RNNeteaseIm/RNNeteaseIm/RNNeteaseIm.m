@@ -9,11 +9,15 @@
 #import "RNNeteaseIm.h"
 #import "RCTUtils.h"
 #import "RNNotificationCenter.h"
+#import "NTESAudioChatViewController.h"
+#import "YNAudioChatViewController.h"
+#import "YNVideoChatViewController.h"
 
 #define kDevice_Is_iPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
 
 @interface RNNeteaseIm(){
     NSString *strUserAgent;
+    NTESAudioChatViewController *audoiVC;
 }
 
 @end
@@ -104,6 +108,23 @@ RCT_EXPORT_METHOD(login:(nonnull NSString *)account token:(nonnull NSString *)to
     }];
     [NIMViewController initWithController].strToken = token;
     [NIMViewController initWithController].strAccount = account;
+}
+
+// 测试---
+RCT_EXPORT_METHOD(callAvChat:(NSDictionary *)params){
+    NSString *sessionId = [params objectForKey:@"sessionId"];
+    NSString *sessionName = [params objectForKey:@"sessionName"];
+    NSString *chatType = [params objectForKey:@"chatType"];
+    
+    UIViewController *rootViewController = RCTPresentedViewController();
+    UIViewController *vc;
+    if ([chatType isEqualToString:@"1"]) {
+        vc = [[YNAudioChatViewController alloc] initWithCallee:sessionId];
+    } else {
+        vc = [[YNVideoChatViewController alloc] initWithCallee:sessionId];
+    }
+
+    [rootViewController presentViewController:vc animated:YES completion:nil];
 }
 
 //注销用户

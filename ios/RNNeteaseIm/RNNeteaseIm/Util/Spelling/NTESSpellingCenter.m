@@ -84,10 +84,10 @@
     @synchronized(self)
     {
         NSInteger count = [_spellingCache count];
-        DDLogDebug(@"Spelling Cache Entries %zd", count);
+//        DDLogDebug(@"Spelling Cache Entries %zd", count);
         if (count >= kMaxEntriesCount)
         {
-            DDLogDebug(@"Clear Spelling Cache %zd Entries",count);
+//            DDLogDebug(@"Clear Spelling Cache %zd Entries",count);
             [_spellingCache removeAllObjects];
         }
         if (_spellingCache)

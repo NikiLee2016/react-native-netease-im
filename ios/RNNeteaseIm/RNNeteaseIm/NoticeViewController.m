@@ -452,7 +452,7 @@
                                                                      err(@"拒绝失败,请重试");
                                                                  }
                                                                  
-                                                                 DDLogDebug(@"%@",error.localizedDescription);
+//                                                                 DDLogDebug(@"%@",error.localizedDescription);
                                                              }];
                     }
                         break;
