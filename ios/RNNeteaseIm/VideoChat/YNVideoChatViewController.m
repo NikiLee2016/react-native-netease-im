@@ -123,13 +123,13 @@
 }
 
 - (void)initRemoteGLView {
-    #if defined (NTESUseGLView)
-        _remoteGLView = [[NTESGLView alloc] initWithFrame:_bigVideoView.bounds];
-        [_remoteGLView setContentMode:[[NTESBundleSetting sharedConfig] videochatRemoteVideoContentMode]];
-        [_remoteGLView setBackgroundColor:[UIColor clearColor]];
-        _remoteGLView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        [_bigVideoView addSubview:_remoteGLView];
-    #endif
+#if defined (NTESUseGLView)
+    _remoteGLView = [[NTESGLView alloc] initWithFrame:_bigVideoView.bounds];
+    [_remoteGLView setContentMode:[[NTESBundleSetting sharedConfig] videochatRemoteVideoContentMode]];
+    [_remoteGLView setBackgroundColor:[UIColor clearColor]];
+    _remoteGLView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [_bigVideoView addSubview:_remoteGLView];
+#endif
 }
 
 
@@ -256,20 +256,20 @@
 //切换接听中界面(语音)
 - (void)audioCallingInterface{
     UIViewController *rootVC = RCTPresentedViewController();
-
+    
     YNAudioChatViewController *vc = [[YNAudioChatViewController alloc] initWithCallInfo:self.callInfo];
-//    [rootVC dismissViewControllerAnimated:NO completion:^{
-        [rootVC presentViewController:vc animated:NO completion:nil];
-//    }];
-//    [UIView  beginAnimations:nil context:NULL];
-//    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-//    [UIView setAnimationDuration:0.75];
-//    [self.navigationController pushViewController:vc animated:NO];
-//    [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight forView:self.navigationController.view cache:NO];
-//    [UIView commitAnimations];
-//    NSMutableArray * vcs = [self.navigationController.viewControllers mutableCopy];
-//    [vcs removeObject:self];
-//    self.navigationController.viewControllers = vcs;
+    //    [rootVC dismissViewControllerAnimated:NO completion:^{
+    [rootVC presentViewController:vc animated:NO completion:nil];
+    //    }];
+    //    [UIView  beginAnimations:nil context:NULL];
+    //    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    //    [UIView setAnimationDuration:0.75];
+    //    [self.navigationController pushViewController:vc animated:NO];
+    //    [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight forView:self.navigationController.view cache:NO];
+    //    [UIView commitAnimations];
+    //    NSMutableArray * vcs = [self.navigationController.viewControllers mutableCopy];
+    //    [vcs removeObject:self];
+    //    self.navigationController.viewControllers = vcs;
 }
 
 - (void)udpateLowSpaceWarning:(BOOL)show {
@@ -393,10 +393,10 @@
 {
     if (([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) && !self.oppositeCloseVideo) {
         
-                if (!_remoteGLView) {
-                    [self initRemoteGLView];
-                }
-                [_remoteGLView render:yuvData width:width height:height];
+        if (!_remoteGLView) {
+            [self initRemoteGLView];
+        }
+        [_remoteGLView render:yuvData width:width height:height];
     }
 }
 #else
@@ -528,9 +528,9 @@
 }
 
 - (void)resetRemoteImage{
-    #if defined (NTESUseGLView)
-        [self.remoteGLView render:nil width:0 height:0];
-    #endif
+#if defined (NTESUseGLView)
+    [self.remoteGLView render:nil width:0 height:0];
+#endif
     
     self.bigVideoView.image = [UIImage imageNamed:@"netcall_bkg.png"];
 }
