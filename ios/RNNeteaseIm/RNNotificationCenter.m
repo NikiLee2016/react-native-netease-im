@@ -12,7 +12,6 @@
 #import "NIMMessageMaker.h"
 #import "NIMModel.h"
 #import "ConversationViewController.h"
-#import "RCTViewManager.h"
 #import "YNAudioChatViewController.h"
 #import "YNVideoChatViewController.h"
 #import "NTESAVNotifier.h"

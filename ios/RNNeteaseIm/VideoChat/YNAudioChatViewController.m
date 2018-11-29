@@ -15,7 +15,6 @@
 #import "NTESVideoChatNetStatusView.h"
 #import "NTESRecordSelectView.h"
 #import "UIView+NTES.h"
-#import "RCTViewManager.h"
 #import "YNVideoChatViewController.h"
 
 #define SCREEN_W [UIScreen mainScreen].bounds.size.width

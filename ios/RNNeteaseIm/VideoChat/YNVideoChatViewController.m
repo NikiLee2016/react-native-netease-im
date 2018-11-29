@@ -16,7 +16,6 @@
 #import "NTESRecordSelectView.h"
 #import "UIView+NTES.h"
 #import "YNAudioChatViewController.h"
-#import "RCTViewManager.h"
 #import "NTESGLView.h"
 
 #define NTESUseGLView

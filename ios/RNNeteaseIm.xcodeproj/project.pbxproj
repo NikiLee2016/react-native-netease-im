@@ -930,11 +930,11 @@
 		4E5B474B1EC1788F00D74E72 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/../../../../ios\"";
+				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/../../../ios\"";
 				GCC_PREFIX_HEADER = RNNeteaseIm/PrefixHeader.pch;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../react-native/React/**",
 					"\"$(SRCROOT)/RNNeteaseIm/VideoChat/View\"/**",
+					"\"$(SRCROOT)/../../react-native/React\"",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -946,11 +946,11 @@
 		4E5B474C1EC1788F00D74E72 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/../../../../ios\"";
+				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/../../../ios\"";
 				GCC_PREFIX_HEADER = RNNeteaseIm/PrefixHeader.pch;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../react-native/React/**",
 					"\"$(SRCROOT)/RNNeteaseIm/VideoChat/View\"/**",
+					"\"$(SRCROOT)/../../react-native/React\"",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";

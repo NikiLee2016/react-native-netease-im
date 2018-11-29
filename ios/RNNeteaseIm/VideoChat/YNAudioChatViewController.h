@@ -5,6 +5,11 @@
 //  Created by cookiej on 2018/11/26.
 //  Copyright © 2018 Dowin. All rights reserved.
 //
+#if __has_include("RCTViewManager.h")
+#import "RCTViewManager.h"
+#else
+#import <React/RCTViewManager.h>
+#endif
 
 #import "NTESNetChatViewController.h"
 
