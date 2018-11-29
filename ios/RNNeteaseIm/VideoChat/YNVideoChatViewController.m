@@ -181,7 +181,7 @@
     self.localRecordingView.hidden = YES;
     self.lowMemoryView.hidden = YES;
     [self.hungUpBtn removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
-    [self.hungUpBtn addTarget:self action:@selector(hangup) forControlEvents:UIControlEventTouchUpInside];
+    [self.hungUpBtn addTarget:self action:@selector(hungUpCall) forControlEvents:UIControlEventTouchUpInside];
     self.localView = self.bigVideoView;
 }
 
@@ -216,7 +216,7 @@
     self.localRecordingView.hidden = YES;
     self.lowMemoryView.hidden = YES;
     [self.hungUpBtn removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
-    [self.hungUpBtn addTarget:self action:@selector(hangup) forControlEvents:UIControlEventTouchUpInside];
+    [self.hungUpBtn addTarget:self action:@selector(hungUpCall) forControlEvents:UIControlEventTouchUpInside];
 }
 
 //接听中界面(视频)
@@ -247,7 +247,7 @@
     self.lowMemoryView.hidden = YES;
     [self.switchModelBtn setTitle:@"语音模式" forState:UIControlStateNormal];
     [self.hungUpBtn removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
-    [self.hungUpBtn addTarget:self action:@selector(hangup) forControlEvents:UIControlEventTouchUpInside];
+    [self.hungUpBtn addTarget:self action:@selector(hungUpCall) forControlEvents:UIControlEventTouchUpInside];
     //    self.localVideoLayer.hidden = NO;
     self.localPreView.hidden = NO;
 }
@@ -349,6 +349,14 @@
     [self switchToAudio];
 }
 
+- (void)hungUpCall {
+    [self hangup];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        UIWindow *window = UIApplication.sharedApplication.keyWindow;
+        [window.rootViewController.view makeToast:@"通话结束" duration:2 position:CSToastPositionCenter];
+    });
+}
 
 #pragma mark - NTESRecordSelectViewDelegate
 
@@ -449,6 +457,13 @@
             if (self.localPreView) {
                 [self onLocalDisplayviewReady:self.localPreView];
             }
+        } else {
+            // fix 自己手动发起视频聊天时，不显示小窗口的问题
+            self.localView = self.smallVideoView;
+            self.localPreView = [NIMAVChatSDK sharedSDK].netCallManager.localPreview;
+            if (self.localPreView) {
+                [self onLocalDisplayviewReady:self.localPreView];
+            }
         }
     }
 }
@@ -530,8 +545,25 @@
 #if defined (NTESUseGLView)
     [self.remoteGLView render:nil width:0 height:0];
 #endif
-    
     self.bigVideoView.image = [UIImage imageNamed:@"netcall_bkg.png"];
+}
+
+static inline BOOL isIPhoneX() {
+    BOOL iPhoneX = NO;
+    /// 先判断设备是否是iPhone/iPod
+    if (UIDevice.currentDevice.userInterfaceIdiom != UIUserInterfaceIdiomPhone) {
+        return iPhoneX;
+    }
+    
+    if (@available(iOS 11.0, *)) {
+        /// 利用safeAreaInsets.bottom > 0.0来判断是否是iPhone X。
+        UIWindow *mainWindow = [[[UIApplication sharedApplication] delegate] window];
+        if (mainWindow.safeAreaInsets.bottom > 0.0) {
+            iPhoneX = YES;
+        }
+    }
+    
+    return iPhoneX;
 }
 
 #pragma mark - Getter
@@ -553,6 +585,7 @@
     if (!_smallVideoView) {
         _smallVideoView = [UIView new];
         _smallVideoView.frame = CGRectMake(SCREEN_W - 79, 30, 64, 98);
+        [self.view addSubview:_smallVideoView];
     }
     return _smallVideoView;
 }
@@ -612,7 +645,7 @@
 - (UIButton *)switchCameraBtn {
     if (!_switchCameraBtn) {
         _switchCameraBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _switchCameraBtn.frame = CGRectMake(0, SCREEN_H - 52, SCREEN_W/5, 52);
+        _switchCameraBtn.frame = CGRectMake(0, SCREEN_H - 52 - (isIPhoneX() ? 34 : 0), SCREEN_W/5, 52);
         [_switchCameraBtn setImage:[UIImage imageNamed:@"btn_turn_normal"] forState:UIControlStateNormal];
         [_switchCameraBtn setImage:[UIImage imageNamed:@"btn_turn_disabled"] forState:UIControlStateSelected];
         [_switchCameraBtn setBackgroundImage:[UIImage imageNamed:@"btn_bg_voice_normal"] forState:UIControlStateNormal];
@@ -624,7 +657,7 @@
 - (UIButton *)disableCameraBtn {
     if (!_disableCameraBtn) {
         _disableCameraBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _disableCameraBtn.frame = CGRectMake(SCREEN_W/5, SCREEN_H - 52, SCREEN_W/5, 52);
+        _disableCameraBtn.frame = CGRectMake(SCREEN_W/5, SCREEN_H - 52 - (isIPhoneX() ? 34 : 0), SCREEN_W/5, 52);
         [_disableCameraBtn setImage:[UIImage imageNamed:@"btn_camera_normal"] forState:UIControlStateNormal];
         [_disableCameraBtn setImage:[UIImage imageNamed:@"btn_camera_disabled"] forState:UIControlStateSelected];
         [_disableCameraBtn setBackgroundImage:[UIImage imageNamed:@"btn_bg_voice_normal"] forState:UIControlStateNormal];
@@ -636,7 +669,7 @@
 - (UIButton *)muteBtn {
     if (!_muteBtn) {
         _muteBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _muteBtn.frame = CGRectMake(SCREEN_W/5*2, SCREEN_H - 52, SCREEN_W/5, 52);
+        _muteBtn.frame = CGRectMake(SCREEN_W/5*2, SCREEN_H - 52 - (isIPhoneX() ? 34 : 0), SCREEN_W/5, 52);
         [_muteBtn setImage:[UIImage imageNamed:@"btn_vvoice_normal"] forState:UIControlStateNormal];
         [_muteBtn setImage:[UIImage imageNamed:@"btn_voice_disable"] forState:UIControlStateSelected];
         [_muteBtn setBackgroundImage:[UIImage imageNamed:@"btn_bg_voice_normal"] forState:UIControlStateNormal];
@@ -648,7 +681,7 @@
 - (UIButton *)localRecordBtn {
     if (!_localRecordBtn) {
         _localRecordBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _localRecordBtn.frame = CGRectMake(SCREEN_W/5*3, SCREEN_H - 52, SCREEN_W/5, 52);
+        _localRecordBtn.frame = CGRectMake(SCREEN_W/5*3, SCREEN_H - 52 - (isIPhoneX() ? 34 : 0), SCREEN_W/5, 52);
         [_localRecordBtn setImage:[UIImage imageNamed:@"btn_vrecord_normal"] forState:UIControlStateNormal];
         [_localRecordBtn setImage:[UIImage imageNamed:@"btn_vrecord_selected"] forState:UIControlStateSelected];
         [_localRecordBtn setBackgroundImage:[UIImage imageNamed:@"btn_bg_voice_normal"] forState:UIControlStateNormal];
@@ -660,11 +693,11 @@
 - (UIButton *)hungUpBtn {
     if (!_hungUpBtn) {
         _hungUpBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _hungUpBtn.frame = CGRectMake(SCREEN_W/5*4, SCREEN_H - 52, SCREEN_W/5, 52);
+        _hungUpBtn.frame = CGRectMake(SCREEN_W/5*4, SCREEN_H - 52 - (isIPhoneX() ? 34 : 0), SCREEN_W/5, 52);
         [_hungUpBtn setImage:[UIImage imageNamed:@"btn_vcancel_normal"] forState:UIControlStateNormal];
         [_hungUpBtn setBackgroundImage:[UIImage imageNamed:@"btn_bg_video_normal"] forState:UIControlStateNormal];
         _hungUpBtn.imageView.contentMode = UIViewContentModeScaleAspectFill;
-        [_hungUpBtn addTarget:self action:@selector(hangup:) forControlEvents:UIControlEventTouchUpInside];
+        [_hungUpBtn addTarget:self action:@selector(hungUpCall) forControlEvents:UIControlEventTouchUpInside];
     }
     return _hungUpBtn;
 }

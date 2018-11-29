@@ -15,6 +15,7 @@
 #import "YNAudioChatViewController.h"
 #import "YNVideoChatViewController.h"
 #import "NTESAVNotifier.h"
+#import "UIView+Toast.h"
 @interface RNNotificationCenter () <NIMSystemNotificationManagerDelegate,NIMChatManagerDelegate, NIMNetCallManagerDelegate>
 @property (nonatomic,strong) AVAudioPlayer *player; //播放提示音
 @property (nonatomic,strong) NTESAVNotifier *notifier;
@@ -178,6 +179,10 @@
 
 # pragma - NIMNetCallManagerDelegate
 - (void)onHangup:(UInt64)callID by:(NSString *)user {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        UIWindow *window = UIApplication.sharedApplication.keyWindow;
+        [window.rootViewController.view makeToast:@"通话结束" duration:2 position:CSToastPositionCenter];
+    });
     [_notifier stop];
 }
 
